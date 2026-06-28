@@ -1,13 +1,15 @@
 """Integration tests against a real RabbitMQ broker.
 
-These tests require a broker reachable at host ``rabbitmq`` (port 5672, vhost
-``/``, guest/guest) from inside the bench container. They are NOT skipped when
-the broker is missing: a connectivity failure surfaces as an explicit failure
-of the "happy path" assertions.
+These tests require a broker reachable at the host given by the
+``RABBITMQ_TEST_HOST`` env var (default ``rabbitmq``, the docker-compose service
+name) on port 5672, vhost ``/``, guest/guest. They are NOT skipped when the
+broker is missing: a connectivity failure surfaces as an explicit failure of the
+"happy path" assertions. In CI the broker runs as a service on ``localhost``.
 """
 
 from __future__ import annotations
 
+import os
 import uuid
 
 import frappe
@@ -15,8 +17,10 @@ from frappe.tests.utils import FrappeTestCase
 
 from frappe_event_bus_rabbitmq.publisher import RabbitMQPublisher
 
-BROKER_HOST = "rabbitmq"
-BROKER_PORT = 5672
+BROKER_HOST = os.environ.get("RABBITMQ_TEST_HOST", "rabbitmq")
+BROKER_PORT = int(os.environ.get("RABBITMQ_TEST_PORT", "5672"))
+BROKER_USER = os.environ.get("RABBITMQ_TEST_USER", "guest")
+BROKER_PASS = os.environ.get("RABBITMQ_TEST_PASS", "guest")
 
 
 def _make_connection(name: str, **overrides: object) -> frappe.model.document.Document:
@@ -27,8 +31,8 @@ def _make_connection(name: str, **overrides: object) -> frappe.model.document.Do
 		"host": BROKER_HOST,
 		"port": BROKER_PORT,
 		"virtual_host": "/",
-		"username": "guest",
-		"password": "guest",
+		"username": BROKER_USER,
+		"password": BROKER_PASS,
 		"connection_timeout": 5,
 		"heartbeat": 30,
 	}
@@ -92,9 +96,7 @@ class TestRabbitMQIntegration(FrappeTestCase):
 		self.assertTrue(result["success"], msg=result)
 
 	def test_bad_host_is_retryable_failure(self) -> None:
-		conn = _make_connection(
-			f"_t_conn_badhost_{self.suffix}", host="nonexistent-broker-host", port=5672
-		)
+		conn = _make_connection(f"_t_conn_badhost_{self.suffix}", host="nonexistent-broker-host", port=5672)
 		dest = _make_destination(f"_t_dest_badhost_{self.suffix}", conn.name)
 		message = {
 			"connection": conn.name,
@@ -108,9 +110,7 @@ class TestRabbitMQIntegration(FrappeTestCase):
 		self.assertTrue(result["retryable"])
 
 	def test_bad_credentials_is_not_retryable(self) -> None:
-		conn = _make_connection(
-			f"_t_conn_badcreds_{self.suffix}", username="baduser", password="badpass"
-		)
+		conn = _make_connection(f"_t_conn_badcreds_{self.suffix}", username="baduser", password="badpass")
 		dest = _make_destination(f"_t_dest_badcreds_{self.suffix}", conn.name)
 		message = {
 			"connection": conn.name,

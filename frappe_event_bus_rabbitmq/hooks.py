@@ -257,4 +257,3 @@ event_bus_providers = ["frappe_event_bus_rabbitmq.provider.get_provider"]
 
 # Vue 3 panel rendering Test Publish results on the Destination form.
 app_include_js = "/assets/frappe_event_bus_rabbitmq/js/test_publish.bundle.js"
-

@@ -99,6 +99,4 @@ class TestValidateDestination(FrappeTestCase):
 			self.publisher.validate_destination(self._dest(declare_queue=1, queue_name=""))
 
 	def test_bind_queue_with_queue_name_passes(self) -> None:
-		self.publisher.validate_destination(
-			self._dest(bind_queue=1, declare_queue=1, queue_name="q")
-		)
+		self.publisher.validate_destination(self._dest(bind_queue=1, declare_queue=1, queue_name="q"))

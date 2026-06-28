@@ -2,8 +2,9 @@
 
 > RabbitMQ provider for [Frappe Event Bus](https://github.com/wizardlabz/frappe-event-bus).
 
+[![CI](https://github.com/wizardlabz/frappe-event-bus-rabbitmq/actions/workflows/ci.yml/badge.svg)](https://github.com/wizardlabz/frappe-event-bus-rabbitmq/actions/workflows/ci.yml)
+[![Linter](https://github.com/wizardlabz/frappe-event-bus-rabbitmq/actions/workflows/linter.yml/badge.svg)](https://github.com/wizardlabz/frappe-event-bus-rabbitmq/actions/workflows/linter.yml)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Status: early development](https://img.shields.io/badge/status-early%20development-orange.svg)](#status)
 
 This app adds **RabbitMQ** as a publishing destination for [Frappe Event Bus](https://github.com/wizardlabz/frappe-event-bus). It contributes RabbitMQ-specific connection and destination DocTypes and a publisher that delivers outbox messages to a broker over AMQP (via [`pika`](https://pypi.org/project/pika/)).
 

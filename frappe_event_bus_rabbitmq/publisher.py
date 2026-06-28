@@ -116,9 +116,7 @@ class RabbitMQPublisher(EventBusProvider):
 			destination_doc, "declare_queue", 0
 		)
 		if needs_queue and not getattr(destination_doc, "queue_name", None):
-			frappe.throw(
-				frappe._("Queue Name is required when declaring or binding a queue.")
-			)
+			frappe.throw(frappe._("Queue Name is required when declaring or binding a queue."))
 
 	def publish(self, message: dict[str, Any]) -> dict[str, Any]:
 		"""Publish a normalized message dict and return a normalized result.
@@ -200,9 +198,7 @@ class RabbitMQPublisher(EventBusProvider):
 		finally:
 			_safe_close(connection)
 
-	def _declare_topology(
-		self, channel: Any, destination_doc: Any, routing_key: str
-	) -> None:
+	def _declare_topology(self, channel: Any, destination_doc: Any, routing_key: str) -> None:
 		"""Declare exchange/queue and bind them per the destination flags."""
 		if destination_doc.declare_exchange and destination_doc.exchange:
 			channel.exchange_declare(
