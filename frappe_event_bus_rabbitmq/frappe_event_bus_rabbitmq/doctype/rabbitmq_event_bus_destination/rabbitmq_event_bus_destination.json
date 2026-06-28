@@ -1,0 +1,175 @@
+{
+ "actions": [],
+ "autoname": "field:destination_name",
+ "creation": "2026-06-29 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "destination_name",
+  "connection",
+  "column_break_head",
+  "exchange",
+  "exchange_type",
+  "routing_key",
+  "section_break_exchange",
+  "declare_exchange",
+  "durable_exchange",
+  "column_break_exchange",
+  "queue_name",
+  "declare_queue",
+  "durable_queue",
+  "bind_queue",
+  "section_break_publish",
+  "persistent_message",
+  "publisher_confirms",
+  "section_break_headers",
+  "headers_template",
+  "section_break_notes",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "destination_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Destination Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "connection",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Connection",
+   "options": "RabbitMQ Event Bus Connection",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_head",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "exchange",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Exchange"
+  },
+  {
+   "default": "direct",
+   "fieldname": "exchange_type",
+   "fieldtype": "Select",
+   "label": "Exchange Type",
+   "options": "direct\nfanout\ntopic\nheaders"
+  },
+  {
+   "fieldname": "routing_key",
+   "fieldtype": "Data",
+   "label": "Routing Key"
+  },
+  {
+   "fieldname": "section_break_exchange",
+   "fieldtype": "Section Break",
+   "label": "Topology"
+  },
+  {
+   "default": "0",
+   "fieldname": "declare_exchange",
+   "fieldtype": "Check",
+   "label": "Declare Exchange"
+  },
+  {
+   "default": "1",
+   "depends_on": "declare_exchange",
+   "fieldname": "durable_exchange",
+   "fieldtype": "Check",
+   "label": "Durable Exchange"
+  },
+  {
+   "fieldname": "column_break_exchange",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "queue_name",
+   "fieldtype": "Data",
+   "label": "Queue Name"
+  },
+  {
+   "default": "0",
+   "fieldname": "declare_queue",
+   "fieldtype": "Check",
+   "label": "Declare Queue"
+  },
+  {
+   "default": "1",
+   "depends_on": "declare_queue",
+   "fieldname": "durable_queue",
+   "fieldtype": "Check",
+   "label": "Durable Queue"
+  },
+  {
+   "default": "0",
+   "fieldname": "bind_queue",
+   "fieldtype": "Check",
+   "label": "Bind Queue to Exchange"
+  },
+  {
+   "fieldname": "section_break_publish",
+   "fieldtype": "Section Break",
+   "label": "Publishing"
+  },
+  {
+   "default": "1",
+   "fieldname": "persistent_message",
+   "fieldtype": "Check",
+   "label": "Persistent Messages"
+  },
+  {
+   "default": "0",
+   "fieldname": "publisher_confirms",
+   "fieldtype": "Check",
+   "label": "Publisher Confirms"
+  },
+  {
+   "fieldname": "section_break_headers",
+   "fieldtype": "Section Break",
+   "label": "Headers"
+  },
+  {
+   "fieldname": "headers_template",
+   "fieldtype": "Code",
+   "label": "Headers Template",
+   "options": "JSON"
+  },
+  {
+   "fieldname": "section_break_notes",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-29 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Frappe Event Bus RabbitMQ",
+ "name": "RabbitMQ Event Bus Destination",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

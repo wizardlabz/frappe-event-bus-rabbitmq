@@ -11,17 +11,17 @@ It is a standalone Frappe app that **depends on the core** `frappe_event_bus` ap
 
 ## Status
 
-🚧 **Early development.** Scaffolding is in place; the connection/destination DocTypes and publisher are being built. Not yet ready for production.
+**v0.1 — implemented and tested.** Connection + Destination DocTypes, the pika-based publisher, validation, registration, and the core-dependency guard are built and covered by an automated suite (20 tests, including integration tests against a live RabbitMQ broker). APIs may still change before 1.0.
 
-## Planned capabilities
+## Capabilities
 
 - Publish to `direct` / `fanout` / `topic` / `headers` exchanges
 - Routing keys, custom headers, persistent (durable) messages
 - Optional exchange/queue declaration and binding
-- TLS connections
+- TLS connections (with optional certificate verification)
 - Publisher confirms
-- Test connection & test publish
-- Retryable vs. non-retryable failure classification
+- **Test Connection** and **Test Publish** buttons on the DocTypes
+- Retryable vs. non-retryable failure classification (auth → non-retryable, connection → retryable), so the core's retry/replay behaves correctly
 
 ## Installation
 

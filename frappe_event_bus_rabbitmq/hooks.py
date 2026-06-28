@@ -82,7 +82,7 @@ app_license = "gpl-3.0"
 # Installation
 # ------------
 
-# before_install = "frappe_event_bus_rabbitmq.install.before_install"
+before_install = "frappe_event_bus_rabbitmq.install.before_install"
 # after_install = "frappe_event_bus_rabbitmq.install.after_install"
 
 # Uninstallation
@@ -246,4 +246,15 @@ app_license = "gpl-3.0"
 # ------------
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
+
+
+# =============================================================================
+# Frappe Event Bus RabbitMQ configuration
+# =============================================================================
+
+# Contribute the RabbitMQ provider spec to the core registry.
+event_bus_providers = ["frappe_event_bus_rabbitmq.provider.get_provider"]
+
+# Vue 3 panel rendering Test Publish results on the Destination form.
+app_include_js = "/assets/frappe_event_bus_rabbitmq/js/test_publish.bundle.js"
 
