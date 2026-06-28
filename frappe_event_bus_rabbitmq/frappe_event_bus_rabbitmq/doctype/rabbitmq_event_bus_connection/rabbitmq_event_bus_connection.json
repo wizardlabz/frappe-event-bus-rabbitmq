@@ -1,0 +1,146 @@
+{
+ "actions": [],
+ "autoname": "field:connection_name",
+ "creation": "2026-06-29 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "connection_name",
+  "enabled",
+  "column_break_head",
+  "host",
+  "port",
+  "virtual_host",
+  "section_break_auth",
+  "username",
+  "password",
+  "column_break_auth",
+  "tls_enabled",
+  "tls_verify",
+  "section_break_tuning",
+  "connection_timeout",
+  "heartbeat",
+  "section_break_notes",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "connection_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Connection Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Enabled"
+  },
+  {
+   "fieldname": "column_break_head",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "host",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Host",
+   "reqd": 1
+  },
+  {
+   "default": "5672",
+   "fieldname": "port",
+   "fieldtype": "Int",
+   "label": "Port"
+  },
+  {
+   "default": "/",
+   "fieldname": "virtual_host",
+   "fieldtype": "Data",
+   "label": "Virtual Host"
+  },
+  {
+   "fieldname": "section_break_auth",
+   "fieldtype": "Section Break",
+   "label": "Authentication"
+  },
+  {
+   "fieldname": "username",
+   "fieldtype": "Data",
+   "label": "Username"
+  },
+  {
+   "fieldname": "password",
+   "fieldtype": "Password",
+   "label": "Password"
+  },
+  {
+   "fieldname": "column_break_auth",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "tls_enabled",
+   "fieldtype": "Check",
+   "label": "TLS Enabled"
+  },
+  {
+   "default": "1",
+   "depends_on": "tls_enabled",
+   "fieldname": "tls_verify",
+   "fieldtype": "Check",
+   "label": "Verify TLS Certificate"
+  },
+  {
+   "fieldname": "section_break_tuning",
+   "fieldtype": "Section Break",
+   "label": "Tuning"
+  },
+  {
+   "default": "30",
+   "fieldname": "connection_timeout",
+   "fieldtype": "Int",
+   "label": "Connection Timeout (s)"
+  },
+  {
+   "default": "60",
+   "fieldname": "heartbeat",
+   "fieldtype": "Int",
+   "label": "Heartbeat (s)"
+  },
+  {
+   "fieldname": "section_break_notes",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-29 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Frappe Event Bus RabbitMQ",
+ "name": "RabbitMQ Event Bus Connection",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
