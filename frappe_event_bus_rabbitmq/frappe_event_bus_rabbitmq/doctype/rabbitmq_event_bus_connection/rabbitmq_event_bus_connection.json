@@ -5,6 +5,7 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "tab_connection",
   "connection_name",
   "enabled",
   "column_break_head",
@@ -14,9 +15,10 @@
   "section_break_auth",
   "username",
   "password",
-  "column_break_auth",
+  "tab_advanced",
   "tls_enabled",
   "tls_verify",
+  "column_break_auth",
   "section_break_tuning",
   "connection_timeout",
   "heartbeat",
@@ -24,6 +26,16 @@
   "notes"
  ],
  "fields": [
+  {
+   "fieldname": "tab_connection",
+   "fieldtype": "Tab Break",
+   "label": "Connection"
+  },
+  {
+   "fieldname": "tab_advanced",
+   "fieldtype": "Tab Break",
+   "label": "Advanced"
+  },
   {
    "fieldname": "connection_name",
    "fieldtype": "Data",

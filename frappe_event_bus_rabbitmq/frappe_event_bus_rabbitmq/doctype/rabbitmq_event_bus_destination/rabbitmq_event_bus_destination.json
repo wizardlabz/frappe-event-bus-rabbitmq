@@ -5,12 +5,14 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "tab_destination",
   "destination_name",
   "connection",
   "column_break_head",
   "exchange",
   "exchange_type",
   "routing_key",
+  "tab_topology",
   "section_break_exchange",
   "declare_exchange",
   "durable_exchange",
@@ -19,6 +21,7 @@
   "declare_queue",
   "durable_queue",
   "bind_queue",
+  "tab_publishing",
   "section_break_publish",
   "persistent_message",
   "publisher_confirms",
@@ -28,6 +31,21 @@
   "notes"
  ],
  "fields": [
+  {
+   "fieldname": "tab_destination",
+   "fieldtype": "Tab Break",
+   "label": "Destination"
+  },
+  {
+   "fieldname": "tab_topology",
+   "fieldtype": "Tab Break",
+   "label": "Topology"
+  },
+  {
+   "fieldname": "tab_publishing",
+   "fieldtype": "Tab Break",
+   "label": "Publishing"
+  },
   {
    "fieldname": "destination_name",
    "fieldtype": "Data",
