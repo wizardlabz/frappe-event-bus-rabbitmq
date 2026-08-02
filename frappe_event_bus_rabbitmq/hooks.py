@@ -256,4 +256,6 @@ before_install = "frappe_event_bus_rabbitmq.install.before_install"
 event_bus_providers = ["frappe_event_bus_rabbitmq.provider.get_provider"]
 
 # Vue 3 panel rendering Test Publish results on the Destination form.
-app_include_js = "/assets/frappe_event_bus_rabbitmq/js/test_publish.bundle.js"
+# Bare bundle name only — bundled_asset() skips rewriting anything that already
+# starts with /assets, which would ship the unbundled ESM source to the browser.
+app_include_js = "test_publish.bundle.js"
