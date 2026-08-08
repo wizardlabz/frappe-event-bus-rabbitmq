@@ -28,7 +28,9 @@
   "section_break_headers",
   "headers_template",
   "section_break_notes",
-  "notes"
+  "notes",
+  "tab_connections",
+  "connections_html"
  ],
  "fields": [
   {
@@ -166,10 +168,26 @@
    "fieldname": "notes",
    "fieldtype": "Small Text",
    "label": "Notes"
+  },
+  {
+   "fieldname": "tab_connections",
+   "fieldtype": "Tab Break",
+   "label": "Connections"
+  },
+  {
+   "fieldname": "connections_html",
+   "fieldtype": "HTML",
+   "label": "Connections"
   }
  ],
  "index_web_pages_for_search": 1,
- "links": [],
+ "links": [
+  {
+   "group": "Delivery",
+   "link_doctype": "Event Bus Outbox Message",
+   "link_fieldname": "destination"
+  }
+ ],
  "modified": "2026-06-29 00:00:00.000000",
  "modified_by": "Administrator",
  "module": "Frappe Event Bus RabbitMQ",
