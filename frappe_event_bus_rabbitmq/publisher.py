@@ -8,6 +8,7 @@ it unit-testable without a live broker.
 
 from __future__ import annotations
 
+import json
 import socket
 import ssl
 from typing import Any
@@ -129,7 +130,7 @@ class RabbitMQPublisher(EventBusProvider):
 
 		routing_key = message.get("routing_key") or destination_doc.routing_key or ""
 		body = message["payload_json"]
-		headers = message.get("headers") or None
+		headers = merge_destination_headers(destination_doc, message.get("headers") or None, message)
 
 		return self._publish_body(connection_doc, destination_doc, routing_key, body, headers)
 
@@ -143,7 +144,8 @@ class RabbitMQPublisher(EventBusProvider):
 		"""Publish a one-off test payload and return a normalized result."""
 		routing_key = destination_doc.routing_key or ""
 		body = frappe.as_json(payload)
-		return self._publish_body(connection_doc, destination_doc, routing_key, body, headers)
+		merged = merge_destination_headers(destination_doc, headers)
+		return self._publish_body(connection_doc, destination_doc, routing_key, body, merged)
 
 	# --- internals -----------------------------------------------------------
 
@@ -256,3 +258,46 @@ def _safe_close(connection: pika.BlockingConnection | None) -> None:
 		connection.close()
 	except (pe.AMQPError, OSError):
 		pass
+
+
+def merge_destination_headers(
+	destination_doc: Any,
+	message_headers: dict[str, Any] | None,
+	message: dict[str, Any] | None = None,
+) -> dict[str, Any] | None:
+	"""Merge the destination's ``headers_template`` under ``message_headers``.
+
+	The destination template supplies defaults for everything published to it.
+	Rule-level headers were rendered earlier with full document context, so they
+	are the more specific configuration and win on any key collision.
+
+	A template that fails to render or does not produce a JSON object is
+	ignored: a misconfigured header must never stop a message being delivered.
+
+	Args:
+		destination_doc: The RabbitMQ destination document.
+		message_headers: Headers already carried on the message, or None.
+		message: The normalized message dict, exposed to the template as
+			``message`` so headers can reference ``reference_doctype`` and friends.
+
+	Returns:
+		The merged header dict, or None when there are no headers at all.
+	"""
+	template = (getattr(destination_doc, "headers_template", None) or "").strip()
+	if not template:
+		return message_headers
+
+	try:
+		rendered = frappe.render_template(template, {"message": message or {}})
+		defaults = json.loads(rendered)
+	except Exception:
+		frappe.log_error(
+			title="Event Bus RabbitMQ: destination headers_template failed",
+			message=frappe.get_traceback(),
+		)
+		return message_headers
+
+	if not isinstance(defaults, dict):
+		return message_headers
+
+	return {**defaults, **(message_headers or {})}

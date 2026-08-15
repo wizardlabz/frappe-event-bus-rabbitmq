@@ -18,6 +18,8 @@ It is a standalone Frappe app that **depends on the core** `frappe_event_bus` ap
 
 - Publish to `direct` / `fanout` / `topic` / `headers` exchanges
 - Routing keys, custom headers, persistent (durable) messages
+- Destination-level `headers_template` (Jinja → JSON) supplying default headers for every
+  message sent there; the rule's own headers win on any key collision
 - Optional exchange/queue declaration and binding
 - TLS connections (with optional certificate verification)
 - Publisher confirms
