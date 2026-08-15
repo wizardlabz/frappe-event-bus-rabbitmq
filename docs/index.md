@@ -1,40 +1,61 @@
-# Frappe Event Bus — RabbitMQ Provider Documentation
+# Frappe Event Bus — RabbitMQ Provider
 
-End-user documentation for the RabbitMQ provider. For an overview and installation, see the [README](../README.md).
+Publishes Event Bus messages to a RabbitMQ broker over AMQP, using [`pika`](https://pypi.org/project/pika/).
 
-## RabbitMQ Event Bus Connection
+For an overview see the [README](../README.md). For core concepts — rules, templates, the outbox, retry — see the [core documentation](https://github.com/wizardlabz/frappe-event-bus/blob/main/docs/index.md).
 
-Defines how to reach a broker. Fields: host, port (default 5672), virtual host (default `/`), username, **password** (stored encrypted), TLS enabled + verify, connection timeout, heartbeat. Use the **Test Connection** button to open and close a real connection and confirm the credentials work.
+## Contents
 
-## RabbitMQ Event Bus Destination
+| | |
+|---|---|
+| [Installation](installation.md) | Install the provider alongside the core. |
+| [Connection](connection.md) | How to reach a broker: host, credentials, TLS. |
+| [Destination](destination.md) | What to publish and where: exchanges, queues, delivery options. |
+| [Troubleshooting](troubleshooting.md) | Errors, causes, and fixes. |
 
-Defines what to publish and where. Fields:
+## What this app contributes
 
-- **Exchange** + **Exchange Type** (`direct`, `fanout`, `topic`, `headers`)
-- **Routing Key** (used unless a rule destination overrides it)
-- **Declare Exchange / Durable Exchange** — declare the exchange on publish
-- **Queue Name / Declare Queue / Durable Queue / Bind Queue** — optionally declare and bind a queue
-- **Persistent Message** — `delivery_mode=2` so messages survive a broker restart
-- **Publisher Confirms** — wait for broker acknowledgement; an unconfirmed/nacked publish is treated as a failure
-- **Headers Template**
+Two doctypes and a publisher:
 
-Use **Test Publish** to send a sample payload through the full path and view the broker response.
+- **RabbitMQ Event Bus Connection** — broker coordinates and credentials.
+- **RabbitMQ Event Bus Destination** — exchange, routing key, optional topology declaration, delivery options.
+- **`RabbitMQPublisher`** — implements the core's provider contract.
+
+It registers itself with the core through the standard hook:
+
+```python
+event_bus_providers = ["frappe_event_bus_rabbitmq.provider.get_provider"]
+```
+
+The registered provider name is **`rabbitmq`** — that is what you type into a rule destination's Provider field.
 
 ## How it fits the core
 
-When a core Event Bus Rule fires with a destination whose provider is `rabbitmq`, the core writes an Outbox Message and the background worker calls this provider's publisher. The publisher loads its own Connection + Destination docs, opens a pika connection, optionally declares/binds topology, publishes the rendered payload, and returns the normalized success/failure result the core uses to drive retry/replay.
+When a core Event Bus Rule fires with a destination whose provider is `rabbitmq`, the core renders the payload, writes an Outbox Message, and the background worker calls this provider. The publisher then:
 
-## Failure handling
+1. Loads its own Connection and Destination documents from the names on the message.
+2. Opens a `pika` connection.
+3. Optionally declares the exchange, declares the queue, and binds them.
+4. Publishes the rendered payload with `content_type: application/json`.
+5. Returns a normalized success or failure result.
+6. Closes the connection.
 
-- Authentication errors → **non-retryable** (the message is dead-lettered).
-- Connection/timeout errors → **retryable** (the core reschedules with backoff).
-- Unroutable / channel-precondition / nack → non-retryable.
+A fresh connection is opened per publish and closed afterwards. There is no connection pooling — a deliberate simplification for v0.1, appropriate for the volumes scheduled publishing produces.
 
-## Troubleshooting
+The core owns everything else: retry scheduling, backoff, dead-lettering, replay, delivery logging, and retention. This app only decides *how to publish* and *whether a failure is worth retrying*.
 
-- *Connection refused / timeout* — check host/port reachability from the bench host and that the broker is up.
-- *ACCESS_REFUSED* — wrong username/password or vhost permissions.
-- *NOT_FOUND - no exchange* — enable **Declare Exchange** on the destination, or create the exchange on the broker.
+## Failure classification
+
+The single most consequential thing this provider does is tell the core whether a failure is transient:
+
+| Classification | Cases |
+|---|---|
+| **Retryable** | Connection errors, timeouts, DNS failures, connection closed by broker |
+| **Not retryable** | Authentication failures, broker channel errors (missing exchange, precondition failed), nacked or unroutable messages |
+
+Anything unrecognised defaults to **retryable** and is logged for investigation — an unknown error is more likely transient than permanent, and a wrong guess here costs a delayed dead-letter rather than a lost message.
+
+See [troubleshooting](troubleshooting.md) for what each error means in practice.
 
 ---
 
