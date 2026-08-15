@@ -54,7 +54,13 @@ def test_publish(destination_name: str, payload: str | None = None) -> dict[str,
 	Returns:
 		The normalized publish result from the publisher.
 	"""
+	# Whitelisted, so reachable by any signed-in user over /api/method. This
+	# sends a real message with a caller-supplied body to a real broker, so
+	# require permission to use the destination rather than merely a session.
+	frappe.has_permission("RabbitMQ Event Bus Destination", "read", doc=destination_name, throw=True)
+
 	destination = frappe.get_doc("RabbitMQ Event Bus Destination", destination_name)
+	frappe.has_permission("RabbitMQ Event Bus Connection", "read", doc=destination.connection, throw=True)
 	connection = frappe.get_doc("RabbitMQ Event Bus Connection", destination.connection)
 	body = frappe.parse_json(payload) if payload else {"_test": True, "source": "test_publish"}
 	return RabbitMQPublisher().test_publish(connection, destination, body)
