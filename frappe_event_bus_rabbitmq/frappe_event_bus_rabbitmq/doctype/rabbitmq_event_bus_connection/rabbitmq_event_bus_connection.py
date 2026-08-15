@@ -44,6 +44,11 @@ def test_connection(connection_name: str) -> dict[str, Any]:
 		``{"success": True}`` on success, otherwise ``{"success": False,
 		"error": <message>}``.
 	"""
+	# Whitelisted, so reachable by any signed-in user over /api/method. This
+	# decrypts the stored password to open a connection with it, and its result
+	# reveals whether a host is reachable, so require permission to read it.
+	frappe.has_permission("RabbitMQ Event Bus Connection", "read", doc=connection_name, throw=True)
+
 	doc = frappe.get_doc("RabbitMQ Event Bus Connection", connection_name)
 	try:
 		RabbitMQPublisher().validate_connection(doc)
