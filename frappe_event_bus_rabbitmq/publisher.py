@@ -130,9 +130,7 @@ class RabbitMQPublisher(EventBusProvider):
 
 		routing_key = message.get("routing_key") or destination_doc.routing_key or ""
 		body = message["payload_json"]
-		headers = merge_destination_headers(
-			destination_doc, message.get("headers") or None, message
-		)
+		headers = merge_destination_headers(destination_doc, message.get("headers") or None, message)
 
 		return self._publish_body(connection_doc, destination_doc, routing_key, body, headers)
 
